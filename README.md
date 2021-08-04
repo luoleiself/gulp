@@ -1,4 +1,4 @@
-### gulp 小型项目构建工具
+## gulp 小型项目构建工具
 
 ```bash
   npm start # 启动开发环境
@@ -83,7 +83,7 @@
 
 #### gulp.config.js
 
-```json
+```javascript
 {
   "css": {
     // css 的源目录, 使用 glob 文件匹配模式, 可修改
@@ -159,7 +159,7 @@
 
 #### htmlincluder.config.js
 
-```json
+```javascript
 // gulp-htmlincluder
 // @options = (optional) options for configuring htmlIncluder
 // options.jsonInput         = A json object used to populate data in files
