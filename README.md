@@ -186,6 +186,7 @@
   - js js 目录
   - pages 页面目录
 - dist 生产环境目录
+- docs 文档目录
 - build gulp 任务运行配置文件目录
   - gulp.config.js 配置 gulp 任务工作流程文件
   - webpack.config.js webpack 配置文件
