@@ -38,7 +38,7 @@
    }
    ```
 
-7. gulp 读取 build/htmlincluder.config.js 文件, 此配置文件主要用于覆盖 [gulp-htmlincluder](https://github.com/internetErik/gulp-htmlincluder) 的配置项, 一般不需要修改, 详见下方配置项 <!-- 使用方法详见 dist/htmlincluder.html -->
+7. gulp 读取 build/htmlincluder.config.js 文件, 此配置文件主要用于覆盖 [gulp-htmlincluder](https://github.com/internetErik/gulp-htmlincluder) 的配置项, 一般不需要修改, 详见下方配置项，使用语法详见 docs/htmlincluder/dist/pages/index.html
 
 8. 生产环境下, gulp 首先执行清除任务, 将所有配置项的 dest 目标目录清除后再执行编译构建任务, 默认不会启动文件监听任务
 
