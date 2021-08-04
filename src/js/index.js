@@ -1,3 +1,5 @@
+import 'core-js/stable';
+import 'regenerator-runtime/runtime';
 var p = new Promise((resolve, reject) => {
   setTimeout(() => {
     resolve(200);
@@ -23,12 +25,17 @@ let gen = generate();
 console.log(gen.next());
 
 class Animal {
-  static length = 0;
+  length = 0;
   constructor() {}
   say() {
     console.log('Hi, dog');
   }
 }
+
+console.log(Symbol('index'));
+
+let obj = Object.assign({}, { name: 'hello Object.assign common', age: 18 });
+console.log(obj);
 
 let set = new Set();
 

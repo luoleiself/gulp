@@ -1,5 +1,4 @@
 module.exports = {
-  NODE_ENV: 'production',
   css: {
     src: ['src/css/**/*.scss', '!src/css/**/*.map'],
     dest: 'dist/css',
@@ -17,7 +16,6 @@ module.exports = {
   html: {
     src: ['src/pages/**/*.html'],
     dest: 'dist/pages',
-    isConcat: false,
   },
   server: {
     port: 8080,
