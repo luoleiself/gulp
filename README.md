@@ -8,10 +8,9 @@
 
 一个用于快速构建小型项目开发生产环境的工具，主要功能包括 sass 编译，ES6 编译及垫片功能（兼容到 IE9），html 页面组件写法，浏览器刷新, 可以自定义源文件目录和编译输出目标目录，编译压缩后的 css 和 js 以\*.min.\* 结尾, 同时自动生成相应的 .map 文件便于调试
 
-### 工作流程
+### 开发流程
 
 1. 执行 npm install 安装项目运行依赖
-
 2. 执行 npm start 或者 npm run dev 命令启动开发环境
 3. gulp 读取 build/gulp.config.js 中的配置项, 按照配置项的源路径和目标路径编译生成相应压缩文件(\*.min.css | \*.min.js), 其中 src 为源文件配置项,支持 [glob](https://www.gulpjs.com.cn/docs/getting-started/explaining-globs/) 文件匹配模式, dest 为输出文件路径, isConcat 为是否压缩为一个文件, 可以根据需要修改默认配置,详见下方配置项
 
@@ -22,7 +21,6 @@
    ```
 
 4. 开发环境下, gulp 监听 build/gulp.config.js 中 css, image, js, html 配置项 src 目录中文件的变化, 自动执行相应的编译压缩任务, 同时会通知浏览器刷新页面, gulp 不会主动删除所有配置项 dest 目标目录
-
 5. gulp 集成 webpack 工具, 读取 build/webpack.config.js 文件, 将模块中使用的第三方库抽离生成公共文件 chunk-vendor.min.js, 此文件存放在 js 配置项的 dest 目标目录下, 此文件需要手动在页面中引入
 
    ```html
