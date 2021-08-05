@@ -43,7 +43,7 @@
    <script src="dist/js/jquery.min.js"></script>
    ```
 
-   ```json
+   ```javascript
    // 使用第三方库
    {
      "externals": {
@@ -119,7 +119,11 @@
 
        ```html
        <ul>
-         <!--#each jsonPath="this" rawJson="[{name:'tom',age:18},{name:'jerry',age:19},{name:'jack'}]"-->
+         <!--#each jsonPath="this" rawJson="[
+          {name:'tom',age:18},
+          {name:'jerry',age:19},
+          {name:'jack'}
+         ]"-->
          <li>
            <span>name</span>
            <span>
@@ -181,7 +185,7 @@
   <script src="dist/js/jquery.min.js"></script>
   ```
 
-  ```json
+  ```javascript
   // 使用第三方库
   {
     "externals": {
