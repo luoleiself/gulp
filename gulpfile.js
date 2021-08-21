@@ -1,4 +1,6 @@
 //如果没有返回 stream, promise, event emitters, child processes, observables 需要手动调用 cb 标识任务完成
+const path = require('path');
+const os = require('os');
 const { src, dest, task, series, parallel, watch } = require('gulp');
 const cleanCSS = require('gulp-clean-css');
 const postCSS = require('gulp-postcss');
@@ -15,7 +17,7 @@ const concat = require('gulp-concat');
 const rename = require('gulp-rename');
 const del = require('del'); // delete files and folders
 const plumber = require('gulp-plumber');
-const gulpConf = require('./build/gulp.config');
+const { gulpConf } = require('./build/gulp.config');
 
 const NODE_ENV = process.env.NODE_ENV || 'production';
 
@@ -83,7 +85,7 @@ async function html(cb) {
 
 // 启动服务, 监听文件变化
 function server(cb) {
-  browserSync.init({
+  let options = {
     watch: true,
     open: gulpConf.server.openBrowser,
     server: {
@@ -92,7 +94,10 @@ function server(cb) {
     },
     port: gulpConf.server.port,
     host: gulpConf.server.host,
-  });
+  };
+  let startPath = path.join(gulpConf.html.dest, gulpConf.server.index);
+  options.startPath = os.type().toLowerCase().includes('windows') && startPath.replace(/\\/gi, '/');
+  browserSync.init(options);
   watch(gulpConf.html.src).on('change', series(html, browserSync.reload));
   watch(gulpConf.css.src, parallel(css));
   watch(gulpConf.js.src, parallel(js));

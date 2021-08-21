@@ -232,7 +232,7 @@
   "server": {
     "port": 8080, // 开发环境的端口号
     "host": "localhost", // 开发环境的域名
-    "openBrowser": false, // 开发环境是否自动打开浏览器
+    "openBrowser": true, // 开发环境是否自动打开浏览器
     "baseDir": "./", // 开发环境应用路径
     "index": "index.html" // 开发环境默认页面
   }

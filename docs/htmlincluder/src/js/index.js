@@ -1,5 +1,6 @@
 import 'core-js/stable';
 import 'regenerator-runtime/runtime';
+
 var p = new Promise((resolve, reject) => {
   setTimeout(() => {
     resolve(200);

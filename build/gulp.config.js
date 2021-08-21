@@ -1,26 +1,31 @@
-module.exports = {
+let baseDir = '.';
+if (baseDir.endsWith('/')) {
+  baseDir = baseDir.substring(0, baseDir.length - 1);
+}
+
+exports.gulpConf = {
   css: {
-    src: ['src/css/**/*.scss', '!src/css/**/*.map'],
-    dest: 'dist/css',
+    src: [`${baseDir}/src/css/**/*.scss`, `!${baseDir}/src/css/**/*.map`],
+    dest: `${baseDir}/dist/css`,
     isConcat: false,
   },
   image: {
-    src: ['src/images/**/*'],
-    dest: 'dist/images',
+    src: [`${baseDir}/src/images/**/*`],
+    dest: `${baseDir}/dist/images`,
   },
   js: {
-    src: ['src/js/**/*.js', '!src/js/**/*.min*'],
-    dest: 'dist/js',
+    src: [`${baseDir}/src/js/**/*.js`, `!${baseDir}/src/js/**/*.min*`],
+    dest: `${baseDir}/dist/js`,
     isConcat: false,
   },
   html: {
-    src: ['src/pages/**/*.html'],
-    dest: 'dist/pages',
+    src: [`${baseDir}/src/pages/**/*.html`],
+    dest: `${baseDir}/dist/pages`,
   },
   server: {
     port: 8080,
     host: 'localhost',
-    openBrowser: false,
+    openBrowser: true,
     baseDir: './',
     index: 'index.html',
   },
