@@ -33,7 +33,7 @@ async function css(cb) {
     .pipe(postCSS([autoprefixer({ cascade: true, grid: 'autoplace' })]))
     .pipe(cleanCSS())
     .pipe(rename({ suffix: '.min' }));
-  cssStream = gulpConf.css.isConcat ? cssStream.pipe(concat('main.min.css')) : cssStream;
+  cssStream = gulpConf.css.isConcat ? cssStream.pipe(concat('index.min.css')) : cssStream;
   cssStream = cssStream.pipe(sourceMaps.write('./')).pipe(dest(gulpConf.css.dest));
   cssStream = NODE_ENV === 'development' ? cssStream.pipe(browserSync.stream()) : cssStream;
   return cssStream;
@@ -65,7 +65,7 @@ async function js(cb) {
     .pipe(webpack(webpackConf))
     .pipe(sourceMaps.init())
     .pipe(rename({ suffix: '.min' }));
-  jsStream = gulpConf.js.isConcat ? jsStream.pipe(concat('main.min.js')) : jsStream; // 是否合并文件
+  jsStream = gulpConf.js.isConcat ? jsStream.pipe(concat('bundle.min.js')) : jsStream; // 是否合并文件
   jsStream = jsStream.pipe(sourceMaps.write('./')).pipe(dest(gulpConf.js.dest));
   jsStream = NODE_ENV === 'development' ? jsStream.pipe(browserSync.stream()) : jsStream;
   return jsStream;
