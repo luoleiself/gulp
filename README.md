@@ -12,12 +12,21 @@
 
 1. 执行 npm install 安装项目运行依赖
 2. 执行 npm start 或者 npm run dev 命令启动开发环境
-3. gulp 读取 build/gulp.config.js 中的配置项, 按照配置项的源路径和目标路径编译生成相应压缩文件(\*.min.css | \*.min.js), 其中 src 为源文件配置项,支持 [glob](https://www.gulpjs.com.cn/docs/getting-started/explaining-globs/) 文件匹配模式, dest 为输出文件路径, isConcat 为是否压缩为一个文件, 可以根据需要修改默认配置,详见下方配置项
+3. gulp 读取 build/gulp.config.js 中的配置项, 按照配置项的源路径和目标路径编译生成相应压缩文件(\*.min.css | \*.min.js), 其中 src 为源文件配置项,支持 [glob](https://www.gulpjs.com.cn/docs/getting-started/explaining-globs/) 文件匹配模式, dest 为输出文件路径, isConcat 为是否合并为一个文件, 可以根据需要修改默认配置,详见下方配置项
 
    ```html
-   // 手动在页面引入
+   // 非合并文件编译压缩后手动在页面引入
    <link href="dist/css/*.min.css" />
    <script src="dist/js/*.min.js"></script>
+   ```
+
+   - css 合并后生成 index.min.css
+   - js 合并后生成 bundle.min.js
+
+   ```html
+   // 合并后文件手动在页面引入
+   <link href="dist/css/index.min.css" />
+   <script src="dist/js/bundle.min.js"></script>
    ```
 
 4. 开发环境下, gulp 监听 build/gulp.config.js 中 css, image, js, html 配置项 src 目录中文件的变化, 自动执行相应的编译压缩任务, 同时会通知浏览器刷新页面, gulp 不会主动删除所有配置项 dest 目标目录
