@@ -1,26 +1,32 @@
 let baseDir = '.';
-if (baseDir.endsWith('/')) {
-  baseDir = baseDir.substring(0, baseDir.length - 1);
-}
+String.prototype.delEndDelimiter = function (delimiter) {
+  let value = this.toString();
+  delimiter = delimiter || '/';
+  return value.endsWith(delimiter) ? value.substring(0, value.length - 1) : value;
+};
 
-exports.gulpConf = {
+const gulpConf = {
   css: {
-    src: [`${baseDir}/src/css/**/*.scss`, `!${baseDir}/src/css/**/*.map`],
-    dest: `${baseDir}/dist/css`,
+    src: [`${baseDir.delEndDelimiter()}/src/css/**/*.scss`, `!${baseDir.delEndDelimiter()}/src/css/**/*.map`],
+    dest: `${baseDir.delEndDelimiter()}/dist/css`,
     isConcat: false,
   },
   image: {
-    src: [`${baseDir}/src/images/**/*`],
-    dest: `${baseDir}/dist/images`,
+    src: [`${baseDir.delEndDelimiter()}/src/images/**/*`],
+    dest: `${baseDir.delEndDelimiter()}/dist/images`,
   },
   js: {
-    src: [`${baseDir}/src/js/**/*.js`, `!${baseDir}/src/js/**/*.min*`],
-    dest: `${baseDir}/dist/js`,
+    src: [`${baseDir.delEndDelimiter()}/src/js/**/*.js`, `!${baseDir.delEndDelimiter()}/src/js/**/*.min*`],
+    dest: `${baseDir.delEndDelimiter()}/dist/js`,
     isConcat: false,
   },
   html: {
-    src: [`${baseDir}/src/pages/**/*.html`],
-    dest: `${baseDir}/dist/pages`,
+    src: [`${baseDir.delEndDelimiter()}/src/pages/**/*.html`],
+    dest: `${baseDir.delEndDelimiter()}/dist/pages`,
+  },
+  libs: {
+    src: [`${baseDir.delEndDelimiter()}/src/libs/**/*`],
+    dest: `${baseDir.delEndDelimiter()}/dist/libs`,
   },
   server: {
     port: 8080,
@@ -30,3 +36,6 @@ exports.gulpConf = {
     index: 'index.html',
   },
 };
+
+exports.baseDir = baseDir;
+exports.gulpConf = gulpConf;

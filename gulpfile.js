@@ -12,6 +12,7 @@ const babel = require('gulp-babel');
 const uglify = require('gulp-uglify');
 const named = require('vinyl-named');
 const webpack = require('webpack-stream');
+// const fileInclude = require('gulp-file-include'); // html文件导入
 const includer = require('gulp-htmlincluder'); // html文件导入
 const concat = require('gulp-concat');
 const rename = require('gulp-rename');
@@ -46,7 +47,6 @@ async function image(cb) {
   }
   let imgStream = src(gulpConf.image.src).pipe(plumber()).pipe(dest(gulpConf.image.dest));
   imgStream = NODE_ENV === 'development' ? imgStream.pipe(browserSync.stream()) : imgStream;
-
   return imgStream;
 }
 
@@ -83,6 +83,16 @@ async function html(cb) {
   return htmlStream;
 }
 
+// 处理依赖库资源
+async function libs(cb) {
+  if (NODE_ENV === 'production') {
+    await del([gulpConf.libs.dest]);
+  }
+  let libsStream = src(gulpConf.libs.src).pipe(plumber()).pipe(dest(gulpConf.libs.dest));
+  libsStream = NODE_ENV === 'development' ? libsStream.pipe(browserSync.stream()) : libsStream;
+  return libsStream;
+}
+
 // 启动服务, 监听文件变化
 function server(cb) {
   let options = {
@@ -102,7 +112,8 @@ function server(cb) {
   watch(gulpConf.css.src, parallel(css));
   watch(gulpConf.js.src, parallel(js));
   watch(gulpConf.image.src, parallel(image));
+  watch(gulpConf.libs.src, parallel(libs));
 }
 
-exports.dev = parallel(server, css, js, image, html);
-exports.build = parallel(css, js, image, html);
+exports.dev = parallel(server, css, js, image, html, libs);
+exports.build = parallel(css, js, image, html, libs);
