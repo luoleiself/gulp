@@ -238,6 +238,12 @@
     // 编译后的 html 目标目录, 可修改
     "dest": "dist/pages"
   },
+  "libs": {
+    // 依赖库 的源目录，使用 glob 文件匹配模式, 可修改
+    "src": ["src/libs/**/*.html"],
+    // 依赖库目标目录, 可修改
+    "dest": "dist/libs"
+  },
   "server": {
     "port": 8080, // 开发环境的端口号
     "host": "localhost", // 开发环境的域名
@@ -310,6 +316,7 @@
   - images 图片目录
   - css sass 文件目录
   - js js 目录
+  - libs 依赖库目录
   - pages 页面目录
 - dist 生产环境目录
 - docs 文档目录
