@@ -240,7 +240,7 @@
   },
   "libs": {
     // 依赖库 的源目录，使用 glob 文件匹配模式, 可修改
-    "src": ["src/libs/**/*.html"],
+    "src": ["src/libs/**/*"],
     // 依赖库目标目录, 可修改
     "dest": "dist/libs"
   },
