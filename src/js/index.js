@@ -1,6 +1,18 @@
 import 'core-js/stable';
 import 'regenerator-runtime/runtime';
-var p = new Promise((resolve, reject) => {
+import path from 'path';
+
+// import Vue from 'vue';
+
+// new Vue({
+//   el: '#app',
+//   render: (h) => h('h1', {}, 'Hello Vue'),
+// });
+
+console.log(path.join('/app/', '/dist/', '/js/'));
+console.log(path.resolve('/app/', 'dist/', 'js/'));
+
+new Promise((resolve, reject) => {
   setTimeout(() => {
     resolve(200);
   }, 3000);
@@ -22,7 +34,30 @@ function* generate() {
   yield 3;
 }
 let gen = generate();
+for (let val of generate()) {
+  console.log(val);
+}
+
 console.log(gen.next());
+
+let arr1 = [1, 2, 3, 4, 5, 6];
+console.log([...arr1]);
+
+let set = new Set();
+
+let map = new Map();
+set.add(1);
+set.add(2);
+set.add(1);
+console.log(set);
+console.log(map);
+let arr = Array.of(1, 2, 3, 4, 5);
+console.log(arr);
+
+let str = 'abcdefgh';
+console.log(str.includes('i'));
+let obj = Object.assign({}, { name: 'hello Object.assign common', age: 18 });
+console.log(obj);
 
 class Animal {
   length = 0;
@@ -31,14 +66,19 @@ class Animal {
     console.log('Hi, dog');
   }
 }
+class Dog extends Animal {
+  constructor() {
+    super();
+  }
+  static run() {
+    console.log('this is static method...');
+  }
+  run() {
+    console.log('Hi, running...');
+  }
+}
+const d = new Dog();
+d.run();
+Dog.run();
 
-console.log(Symbol('index'));
-
-let obj = Object.assign({}, { name: 'hello Object.assign common', age: 18 });
-console.log(obj);
-
-let set = new Set();
-
-let map = new Map();
-
-let arr = Array.of(1, 2, 3, 4, 5);
+console.log(Symbol('common'));

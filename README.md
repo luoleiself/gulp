@@ -15,7 +15,7 @@
 3. gulp 读取 build/gulp.config.js 中的配置项, 按照配置项的源路径和目标路径编译生成相应压缩文件(\*.min.css | \*.min.js), 其中 src 为源文件配置项,支持 [glob](https://www.gulpjs.com.cn/docs/getting-started/explaining-globs/) 文件匹配模式, dest 为输出文件路径, isConcat 为是否合并为一个文件, 可以根据需要修改默认配置,详见下方配置项
 
    ```html
-   // 非合并文件编译压缩后手动在页面引入
+   // 非合并文件编译压缩后, 如果增加额外资源需要手动在 -link.html 和 -footer.html中手动引入
    <link href="dist/css/*.min.css" />
    <script src="dist/js/*.min.js"></script>
    ```
@@ -24,144 +24,42 @@
    - js 合并后生成 bundle.min.js
 
    ```html
-   // 合并后文件手动在页面引入
+   // 合并后文件需要手动在 -link.html 和 -footer.html 中引入
    <link href="dist/css/index.min.css" />
    <script src="dist/js/bundle.min.js"></script>
    ```
 
 4. 开发环境下, gulp 监听 build/gulp.config.js 中 css, image, js, html 配置项 src 目录中文件的变化, 自动执行相应的编译压缩任务, 同时会通知浏览器刷新页面, gulp 不会主动删除所有配置项 dest 目标目录
-5. gulp 集成 webpack 工具, 读取 build/webpack.config.js 文件, 将模块中使用的第三方库抽离生成公共文件 chunk-vendor.min.js, 此文件存放在 js 配置项的 dest 目标目录下, 此文件需要手动在页面中引入
+5. gulp 集成 webpack 工具, 读取 build/webpack.config.js 文件, 将模块中使用的第三方库抽离生成公共文件 chunk-vendor.min.js, 此文件存放在 js 配置项的 dest 目标目录下
 
    ```html
-   // 手动在页面引入
+   // import 导入第三方依赖库打包编译后文件, 已在 -footer.html 中引入
    <script src="dist/js/chunk-vendor.min.js"></script>
    ```
 
-   ```javascript
-   // 使用第三方库
-   npm i jquery
-   import $ from 'jquery';
-   ```
+6. 工具中默认在 -footer.html 中已引入 jquery-1.11.3.min.js 和 template-web.js, 可直接使用
 
-6. 如果想在项目中使用依赖库的 CDN 链接并且不想把依赖库打包进来, 则需要修改 build/webpack.config.js 文件中的 externals 配置项, 同时在页面中手动添加依赖库的 CDN 链接
+7. gulp 读取 build/htmlincluder.config.js 文件, 此配置文件主要用于覆盖 [gulp-htmlincluder](https://github.com/internetErik/gulp-htmlincluder) 的配置项, 一般不需要修改, 详见下方配置项，使用语法详见 docs/htmlincluder/dist/pages/index.html, 主要提供的功能如下:
 
-   ```html
-   // 手动在页面引入
-   <script src="dist/js/jquery.min.js"></script>
-   ```
-
-   ```javascript
-   // 使用第三方库
-   {
-     "externals": {
-       // jquery: 'jQuery',
-     }
-   }
-   ```
-
-7. gulp 读取 build/htmlincluder.config.js 文件, 此配置文件主要用于覆盖 [gulp-htmlincluder](https://github.com/internetErik/gulp-htmlincluder) 的配置项, 一般不需要修改, 详见下方配置项，使用语法详见 docs/htmlincluder/dist/pages/index.html
-
-   - 导入文件:
-
-     导入的文件名以 - 开头, - 开头的文件会被忽略掉不被编译打包, 编译后的文件名以当前文件名命名
-
-     ```html
-     <!--#insert path="./components/-nav.html" -->
-     ```
+   - 导入文件
 
    - 当前文件中的内容插入到目标文件指定位置（类似于插槽）
 
-     目标文件名以 \_ 开头命名, \_ 开头的文件会被忽略掉不被编译打包, 编译后的文件名以当前文件名命名
-
-     插入的内容：标记内的内容被渲染到目标文件指定位置
-
-     ```html
-     <!--#wrap path="./_wrap.html" -->
-     <div>
-       <h4>Hello Wrap</h4>
-     </div>
-     <!--#endwrap -->
-     ```
-
-     目标文件：当前标记可以在任何位置
-
-     ```html
-     <!--#middle -->
-     ```
-
    - 文件内使用数据
 
-     ```html
-     <script>
-       // jsonPath: 指定 rawJson 对象中的 key
-       // rawJson: JS 对象，可以为一个立即执行函数表达式, 返回一个对象
-       // default: 默认值
-     </script>
-     <!--#data jsonPath="name" rawJson="{name:'hello gulp-htmlincluder'}" default="hello world"-->
-     ```
-
    - 使用判断
-
-     ```html
-     <!--#if jsonPath="flag" rawJson="{flag:true}"-->
-     <p>类型为真的判断</p>
-     <!--#endif-->
-     ```
 
    - 使用循环
 
      - 遍历数组
 
-       ```html
-       <ul>
-         <!--#each jsonPath="this" rawJson="[1, 2, 3]"-->
-         <li>
-           <!--#data jsonPath="this"-->
-         </li>
-         <!--#endeach -->
-       </ul>
-       ```
-
      - 遍历对象
-
-       ```html
-       <ul>
-         <!--#each jsonPath="this" rawJson="[
-          {name:'tom',age:18},
-          {name:'jerry',age:19},
-          {name:'jack'}
-         ]"-->
-         <li>
-           <span>name</span>
-           <span>
-             <!--#data jsonPath="name"-->
-           </span>
-           <span>age</span>
-           <span>
-             <!--#data jsonPath="age" default="99"-->
-           </span>
-         </li>
-         <!--#endeach-->
-       </ul>
-       ```
 
    - 忽略内容
 
      - 忽略之外的内容
 
-       ```html
-       <!--#clipbefore -->
-       此处内容正常编译, 其他内容被忽略
-       <!--#clipafter  -->
-       ```
-
      - 忽略之内的内容
-
-       ```html
-       <!--#clipbetween -->
-       此处的内容会被忽略, 其他内容正常编译
-       <!--#endclipbetween -->
-       ```
 
 8. 生产环境下, gulp 首先执行清除任务, 将所有配置项的 dest 目标目录清除后再执行编译构建任务, 默认不会启动文件监听任务
 
@@ -172,34 +70,13 @@
   - import "core-js/stable";
   - import "regenerator-runtime/runtime";
 
-- 构建工具默认没有安装任何项目运行依赖的库,可以根据需要自己手动安装引入依赖库, 例如 jquery, lodash 等
+- 依赖库
 
-  ```html
-  // 手动在页面引入
-  <script src="dist/js/chunk-vendor.min.js"></script>
-  ```
+  - 工具中默认在 -footer.html 中已引入 jquery-1.11.3.min.js 和 template-web.js, 可直接使用
 
-  ```javascript
-  // 使用第三方库
-  npm i jquery
-  import $ from 'jquery';
-  ```
+  - 如果需要将依赖库放置在项目内部使用, 可将资源文件放置在 src/libs 目录下, 工具会自动打包到 dist/libs 下, 需要手动在页面 -footer.html 中引入
 
-- 如需要使用依赖库的 CDN 链接, 则需要修改 build/webpack.config.js 文件中的 externals 配置项, 同时需要手动在页面中添加 CDN 链接
-
-  ```html
-  // 手动在页面引入
-  <script src="dist/js/jquery.min.js"></script>
-  ```
-
-  ```javascript
-  // 使用第三方库
-  {
-    "externals": {
-      /* jquery: 'jQuery', */
-    }
-  }
-  ```
+  - 使用 npm 安装依赖库, 如果想使用 import 导入依赖库但不想被打包进 dist/js/chunk-vendor.min.js 中, 可在 build/webpack.config.js 中 externals 配置忽略项
 
 ### 待办
 
