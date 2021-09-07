@@ -1,41 +1,38 @@
 let baseDir = '.';
-String.prototype.delEndDelimiter = function (delimiter) {
-  let value = this.toString();
-  delimiter = delimiter || '/';
-  return value.endsWith(delimiter) ? value.substring(0, value.length - 1) : value;
-};
 
+// 打包资源文规则
 const gulpConf = {
+  libs: {
+    src: [`${baseDir}/src/libs/**/*`],
+    dest: `${baseDir}/dist/libs`,
+  },
   css: {
-    src: [`${baseDir.delEndDelimiter()}/src/css/**/*.scss`, `!${baseDir.delEndDelimiter()}/src/css/**/*.map`],
-    dest: `${baseDir.delEndDelimiter()}/dist/css`,
+    src: [`${baseDir}/src/css/**/*.scss`, `!${baseDir}/src/css/**/*.map`],
+    dest: `${baseDir}/dist/css`,
     isConcat: false,
   },
   image: {
-    src: [`${baseDir.delEndDelimiter()}/src/images/**/*`],
-    dest: `${baseDir.delEndDelimiter()}/dist/images`,
+    src: [`${baseDir}/src/images/**/*`],
+    dest: `${baseDir}/dist/images`,
   },
   js: {
-    src: [`${baseDir.delEndDelimiter()}/src/js/**/*.js`, `!${baseDir.delEndDelimiter()}/src/js/**/*.min*`],
-    dest: `${baseDir.delEndDelimiter()}/dist/js`,
+    src: [`${baseDir}/src/js/**/*.js`, `!${baseDir}/src/js/**/*.min*`],
+    dest: `${baseDir}/dist/js`,
     isConcat: false,
   },
   html: {
-    src: [`${baseDir.delEndDelimiter()}/src/pages/**/*.html`],
-    dest: `${baseDir.delEndDelimiter()}/dist/pages`,
-  },
-  libs: {
-    src: [`${baseDir.delEndDelimiter()}/src/libs/**/*`],
-    dest: `${baseDir.delEndDelimiter()}/dist/libs`,
-  },
-  server: {
-    port: 8080,
-    host: 'localhost',
-    openBrowser: true,
-    baseDir: './',
-    index: 'index.html',
+    src: [`${baseDir}/src/pages/**/*.html`],
+    dest: `${baseDir}/dist/pages`,
   },
 };
+// 服务器配置
+const serverConf = {
+  port: 8080,
+  host: 'localhost',
+  openBrowser: true,
+  baseDir: baseDir,
+  index: 'index.html',
+};
 
-exports.baseDir = baseDir;
 exports.gulpConf = gulpConf;
+exports.serverConf = serverConf;

@@ -18,7 +18,7 @@ const concat = require('gulp-concat');
 const rename = require('gulp-rename');
 const del = require('del'); // delete files and folders
 const plumber = require('gulp-plumber');
-const { gulpConf } = require('./build/gulp.config');
+const { gulpConf, serverConf } = require('./build/gulp.config');
 
 const NODE_ENV = process.env.NODE_ENV || 'production';
 
@@ -97,15 +97,15 @@ async function libs(cb) {
 function server(cb) {
   let options = {
     watch: true,
-    open: gulpConf.server.openBrowser,
+    open: serverConf.openBrowser,
     server: {
-      baseDir: gulpConf.server.baseDir,
-      index: gulpConf.server.index,
+      baseDir: serverConf.baseDir,
+      index: serverConf.index,
     },
-    port: gulpConf.server.port,
-    host: gulpConf.server.host,
+    port: serverConf.port,
+    host: serverConf.host,
   };
-  let startPath = path.join(gulpConf.html.dest, gulpConf.server.index);
+  let startPath = path.join(gulpConf.html.dest, serverConf.index);
   options.startPath = os.type().toLowerCase().includes('windows') && startPath.replace(/\\/gi, '/');
   browserSync.init(options);
   watch(gulpConf.html.src).on('change', series(html, browserSync.reload));
