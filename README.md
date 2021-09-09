@@ -111,7 +111,7 @@ exports.gulpConf = {
    * eg: htmlDest: 'bundle/other/foo', 页面路径: bundle/other/foo/, 静态资源: bundle/other/css, bundle/other/images, bundle/other/js, bundle/other/libs
    */
   htmlSrc: 'src/pages', // 页面资源源路径, 其他静态资源将此路径解析出根路径
-  htmlDest: 'dist/pages', // 页面资源目标路径，其他静态资源根据此路径解析出目标根路径
+  htmlDest: 'dist', // 页面资源目标路径，其他静态资源根据此路径解析出目标根路径
 };
 // 开发环境配置
 exports.serverConf = {
