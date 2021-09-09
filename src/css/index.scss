@@ -1,1 +1,9 @@
+@use 'sass:math';
+@import './_fns.scss';
 @import './_reset.scss';
+
+body {
+  height: 100%;
+  height: rem(-600, 2);
+  margin-top: rem(-600, 2);
+}

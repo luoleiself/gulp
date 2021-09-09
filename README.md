@@ -8,11 +8,32 @@
 
 一个用于快速构建小型项目开发生产环境的工具，主要功能包括 sass 编译，ES6 编译及垫片功能（兼容到 IE9），html 页面组件写法，浏览器刷新, 可以自定义源文件目录和编译输出目标目录，编译压缩后的 css 和 js 以\*.min.\* 结尾, 同时自动生成相应的 .map 文件便于调试
 
+### 开发注意事项
+
+- 如需要覆盖 gulp 资源路径, webpack, server, gulp-htmlincluder 配置, 可在 build.config.js 中指定对象中配置, gulp 任务启动时会自动读取此配置项覆盖默认配置
+
+- ES6 以上 API 兼容 IE 9 用法: 需要手动在模块内导入以下包 [babel 7.4.0 版本 @babel/polyfill 包被废弃](https://babeljs.io/docs/en/babel-polyfill) | [Babel 新的提案](https://babeljs.io/docs/en/plugins-list#es2021)
+
+  - import "core-js/stable";
+  - import "regenerator-runtime/runtime";
+
+- 依赖库
+
+  - 工具中默认在 -footer.html 中已引入 jquery-1.11.3.min.js 和 template-web.js, 可直接使用
+
+  - 如果需要将依赖库放置在项目内部使用, 可将资源文件放置在 src/libs 目录下, 工具会自动打包到 dist/libs 下, 需要手动在页面 -footer.html 中引入
+
+  - 使用 npm 安装依赖库, 如果想使用 import 导入依赖库但不想被打包进 dist/js/chunk-vendor.min.js 中, 可在 build/webpack.config.js 中 externals 配置忽略项
+
 ### 开发流程
 
 1. 执行 npm install 安装项目运行依赖
 2. 执行 npm start 或者 npm run dev 命令启动开发环境
-3. gulp 读取 build/gulp.config.js 中的配置项, 按照配置项的源路径和目标路径编译生成相应压缩文件(\*.min.css | \*.min.js), 其中 src 为源文件配置项,支持 [glob](https://www.gulpjs.com.cn/docs/getting-started/explaining-globs/) 文件匹配模式, dest 为输出文件路径, isConcat 为是否合并为一个文件, 可以根据需要修改默认配置,详见下方配置项
+3. gulp 读取 build.config.js 中的配置项, 通过 gulpConf 配置项 htmlSrc 和 htmlDest 配置解析出来静态资源的相对路径,详情见下方配置项注释
+
+   - serverConf 为重置本地开发环境服务器配置项
+   - webpackConf 为重置 webpack 配置项,
+   - htmlIncluderConf 为重置 gulp-htmlincluder 插件配置
 
    ```html
    // 非合并文件编译压缩后, 如果增加额外资源需要手动在 -link.html 和 -footer.html中手动引入
@@ -29,8 +50,8 @@
    <script src="dist/js/bundle.min.js"></script>
    ```
 
-4. 开发环境下, gulp 监听 build/gulp.config.js 中 css, image, js, html 配置项 src 目录中文件的变化, 自动执行相应的编译压缩任务, 同时会通知浏览器刷新页面, gulp 不会主动删除所有配置项 dest 目标目录
-5. gulp 集成 webpack 工具, 读取 build/webpack.config.js 文件, 将模块中使用的第三方库抽离生成公共文件 chunk-vendor.min.js, 此文件存放在 js 配置项的 dest 目标目录下
+4. 开发环境下, gulp 监听 css, images, js, pages, libs 目录中文件的变化, 自动执行相应的编译压缩任务, 同时会通知浏览器刷新页面, gulp 不会主动删除所有配置项 dest 目标目录
+5. gulp 集成 webpack 工具,将模块中使用的第三方库抽离生成公共文件 chunk-vendor.min.js, 此文件存放在 js 配置项的 dest 目标目录下
 
    ```html
    // import 导入第三方依赖库打包编译后文件, 已在 -footer.html 中引入
@@ -39,7 +60,7 @@
 
 6. 工具中默认在 -footer.html 中已引入 jquery-1.11.3.min.js 和 template-web.js, 可直接使用
 
-7. gulp 读取 build/htmlincluder.config.js 文件, 此配置文件主要用于覆盖 [gulp-htmlincluder](https://github.com/internetErik/gulp-htmlincluder) 的配置项, 一般不需要修改, 详见下方配置项，使用语法详见 docs/htmlincluder/dist/pages/index.html, 主要提供的功能如下:
+7. gulp-htmlincluder 默认配置在 build/htmlincluder.config.js 文件中, 此配置文件主要用于覆盖 [gulp-htmlincluder](https://github.com/internetErik/gulp-htmlincluder) 的配置项, 一般不需要修改, 详见下方配置项，使用语法详见 docs/htmlincluder/dist/pages/index.html, 主要提供的功能如下:
 
    - 导入文件
 
@@ -63,128 +84,47 @@
 
 8. 生产环境下, gulp 首先执行清除任务, 将所有配置项的 dest 目标目录清除后再执行编译构建任务, 默认不会启动文件监听任务
 
-### 开发注意事项
-
-- ES6 以上 API 兼容 IE 9 用法: 需要手动在模块内导入以下包 [babel 7.4.0 版本 @babel/polyfill 包被废弃](https://babeljs.io/docs/en/babel-polyfill) | [Babel 新的提案](https://babeljs.io/docs/en/plugins-list#es2021)
-
-  - import "core-js/stable";
-  - import "regenerator-runtime/runtime";
-
-- 依赖库
-
-  - 工具中默认在 -footer.html 中已引入 jquery-1.11.3.min.js 和 template-web.js, 可直接使用
-
-  - 如果需要将依赖库放置在项目内部使用, 可将资源文件放置在 src/libs 目录下, 工具会自动打包到 dist/libs 下, 需要手动在页面 -footer.html 中引入
-
-  - 使用 npm 安装依赖库, 如果想使用 import 导入依赖库但不想被打包进 dist/js/chunk-vendor.min.js 中, 可在 build/webpack.config.js 中 externals 配置忽略项
-
 ### 待办
 
 - 依赖库 CDN 链接自动导入
 
 ### 配置文件说明
 
-#### gulp.config.js
+#### build.config.js
 
 ```javascript
-{
-  "css": {
-    // css 的源目录, 使用 glob 文件匹配模式, 可修改
-    "src": ["src/css/**/*.scss", "!src/css/**/*.map"],
-    // 编译压缩后的 css 目标目录，可修改
-    "dest": "dist/css",
-    "isConcat": false // 是否将所有文件压缩成一个文件
-  },
-  "image": {
-    // 图片的源目录, 使用 glob 文件匹配模式, 可修改
-    "src": ["src/images/**/*"],
-    // 图片的目标目录, 可修改
-    "dest": "dist/images"
-  },
-  "js": {
-    // js 的源目录，使用 glob 文件匹配模式, 可修改
-    "src": ["src/js/**/*.js", "!src/js/**/*.min*"],
-    // 编译压缩后的 js 目标目录，可修改
-    "dest": "dist/js",
-    // 是否将所有文件压缩成一个文件, 允许只是拼接压缩多个文件并不会优化代码逻辑
-    "isConcat": false
-  },
-  "html": {
-    // html 的源目录，使用 glob 文件匹配模式, 可修改
-    "src": ["src/pages/**/*.html"],
-    // 编译后的 html 目标目录, 可修改
-    "dest": "dist/pages"
-  },
-  "libs": {
-    // 依赖库 的源目录，使用 glob 文件匹配模式, 可修改
-    "src": ["src/libs/**/*"],
-    // 依赖库目标目录, 可修改
-    "dest": "dist/libs"
-  },
-  "server": {
-    "port": 8080, // 开发环境的端口号
-    "host": "localhost", // 开发环境的域名
-    "openBrowser": true, // 开发环境是否自动打开浏览器
-    "baseDir": "./", // 开发环境应用路径
-    "index": "index.html" // 开发环境默认页面
-  }
-}
-```
-
-#### webpack.config.js
-
-```javascript
-{
-  module: {
-    rules: [
-      {
-        test: /\.js$/i,
-        exclude: /node_modules/,
-        use: ["babel-loader"],
-        /* @babel/plugin-transform-runtime 无法对某些实例方法(includes, assign...)进行垫片处理, 需要手动引入 polyfill
-        require.ensure 以及 AMD 采用异步式调用,在 IE 浏览器中报错  Promise not defined,
-        webpack生成的 new Promise 相关代码, 超出了 babel-runtime 的控制范围，只有 polyfill 全局的 Promise 才能解决此问题
-        */
-      },
-    ],
-  },
-  optimization: {
-    splitChunks: {
-      chunks: "all", // async, initial 表示哪些 chunk 进行优化
-      name: "chunk-vendor",
-      cacheGroups: {
-        vendor: {
-          test: /[\\/]node_modules[\\/]/, //打包第三方库
-          priority: 10, // 优先级
-        },
-      },
-    },
-  },
-  externals: {
-    // jquery: 'jQuery',
-  }
-}
-```
-
-#### htmlincluder.config.js
-
-```javascript
-// gulp-htmlincluder
-// @options = (optional) options for configuring htmlIncluder
-// options.jsonInput         = A json object used to populate data in files
-// options.insertPattern     = The test looked for in order to insert files
-//          (this is so ssi includes can be used instead)
-// options.filePathAttribute = the name used for the file pathing for #insert
-//          and #wrap (default= 'path')
-// options.jsonPathAttribute = the name used for the file pathing for #insert
-//          , #wrap, #data, #jsonInsert (default= 'jsonPath')
-//
-//
-// options.dev.limitIterations = the number of times processFileWithJsonInput will loop
-// options.dev.printIterations = console log each processFileWithJsonInput loop
-// options.dev.printResult = console logs the final output
-// options.dev.printPaths = console logs the output of buildPathFromRelativePath
-{ "dev": {} }
+// gulp 资源路径配置
+exports.gulpConf = {
+  // cssConcat: false, // 是否合并 css 为一个文件
+  // jsConcat: false, // 是否合并 js 为一个文件
+  /**
+   * 静态资源根据此路径解析出静态资源的相对路径
+   * 源码路径
+   * eg: htmlSrc: '',  页面路径: src/, 静态资源: src/css, src/images, src/js, src/libs
+   * eg: htmlSrc: 'source',  页面路径: source/, 静态资源: source/css, source/images, source/js, source/libs
+   * eg: htmlSrc: 'source/pages', 页面路径: source/pages/, 静态资源: source/css, source/images, source/js, source/libs
+   * eg: htmlSrc: 'source/other/foo', 页面路径: source/other/foo/, 静态资源: source/other/css, source/other/images, source/other/js, source/other/libs
+   * 编译后路径
+   * eg: htmlDest: '',  页面路径: dist/, 静态资源: dist/css, dist/images, dist/js, dist/libs
+   * eg: htmlDest: 'bundle', 页面路径: bundle/, 静态资源: bundle/css, bundle/images, bundle/js, bundle/libs
+   * eg: htmlDest: 'bundle/pages', 页面路径: bundle/pages/, 静态资源: bundle/css, bundle/images, bundle/js, bundle/libs
+   * eg: htmlDest: 'bundle/other/foo', 页面路径: bundle/other/foo/, 静态资源: bundle/other/css, bundle/other/images, bundle/other/js, bundle/other/libs
+   */
+  htmlSrc: 'src/pages', // 页面资源源路径, 其他静态资源将此路径解析出根路径
+  htmlDest: 'dist/pages', // 页面资源目标路径，其他静态资源根据此路径解析出目标根路径
+};
+// 开发环境配置
+exports.serverConf = {
+  // port: 8080,
+  // host: 'localhost',
+  // openBrowser: true,
+  // baseDir: './',
+  index: 'index.html',
+};
+// webpack 配置
+exports.webpackConf = {};
+// gulp-htmlincluder 配置
+exports.htmlIncluderConf = {};
 ```
 
 ### 目录
@@ -203,3 +143,4 @@
   - htmlincluder.config.js 页面模板配置文件
 - .babelrc babel 配置文件
 - .browserslistrc 浏览器版本配置文件
+- build.config.js 覆盖 build 目录下的配置文件中的配置项
