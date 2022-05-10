@@ -57,7 +57,7 @@ exports.resolvePath = function (config) {
   };
   conf.html = {
     src: [`${joinPath(isValidHtmlSrc ? config.htmlSrc : `${baseSrc}/pages`, '**/*.htm{l,}')}`],
-    dest: `${joinPath(isValidHtmlDest ? config.htmlDest : `${baseDest}/pages`)}`,
+    dest: `${joinPath(isValidHtmlDest ? config.htmlDest : `${baseDest}/`)}`,
   };
   return conf;
 };
