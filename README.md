@@ -105,13 +105,13 @@ exports.gulpConf = {
    * eg: htmlSrc: 'source/pages', 页面路径: source/pages/, 静态资源: source/css, source/images, source/js, source/libs
    * eg: htmlSrc: 'source/other/foo', 页面路径: source/other/foo/, 静态资源: source/other/css, source/other/images, source/other/js, source/other/libs
    * 编译后路径
-   * eg: htmlDest: '',  页面路径: dist/, 静态资源: dist/css, dist/images, dist/js, dist/libs
-   * eg: htmlDest: 'bundle', 页面路径: bundle/, 静态资源: bundle/css, bundle/images, bundle/js, bundle/libs
-   * eg: htmlDest: 'bundle/pages', 页面路径: bundle/pages/, 静态资源: bundle/css, bundle/images, bundle/js, bundle/libs
-   * eg: htmlDest: 'bundle/other/foo', 页面路径: bundle/other/foo/, 静态资源: bundle/other/css, bundle/other/images, bundle/other/js, bundle/other/libs
+   * eg: htmlDest: '',  输出目录：页面路径: dist/index.html, 静态资源: dist/css, dist/images, dist/js, dist/libs
+   * eg: htmlDest: 'bundle', 输出目录：页面路径: bundle/index.html, 静态资源: bundle/css, bundle/images, bundle/js, bundle/libs
+   * eg: htmlDest: 'bundle/pages', 输出目录：页面路径: bundle/pages/index.html, 静态资源: bundle/css, bundle/images, bundle/js, bundle/libs
+   * eg: htmlDest: 'bundle/other/foo', 输出目录：页面路径: bundle/other/foo/index.html, 静态资源: bundle/other/css, bundle/other/images, bundle/other/js, bundle/other/libs
    */
   htmlSrc: 'src/pages', // 页面资源源路径, 其他静态资源将此路径解析出根路径
-  htmlDest: 'dist', // 页面资源目标路径，其他静态资源根据此路径解析出目标根路径
+  htmlDest: '', // 页面资源目标路径，其他静态资源根据此路径解析出目标根路径
 };
 // 开发环境配置
 exports.serverConf = {
