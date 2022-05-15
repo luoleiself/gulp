@@ -11,64 +11,92 @@ const through2 = require('through2');
  * @returns String
  */
 function dateFormat(timestamp, { type = 0, isShowSeparator = true, dateSeparator = '-', timeSeparator = ':' } = {}) {
-  const _date = new Date(timestamp * 1000);
-  const year = _date.getFullYear();
-  const month = _date.getMonth() + 1;
-  const date = _date.getDate();
+    const _date = new Date(timestamp * 1000);
+    const year = _date.getFullYear();
+    const month = _date.getMonth() + 1;
+    const date = _date.getDate();
 
-  const hour = _date.getHours();
-  const min = _date.getMinutes();
-  const second = _date.getSeconds();
+    const hour = _date.getHours();
+    const min = _date.getMinutes();
+    const second = _date.getSeconds();
 
-  function gtNine(val) {
-    return val > 9 ? val : `0${val}`;
-  }
-  let result = `${year}${dateSeparator}${gtNine(month)}${dateSeparator}${gtNine(date)} ${gtNine(hour)}${timeSeparator}${gtNine(
+    function gtNine(val) {
+        return val > 9 ? val : `0${val}`;
+    }
+    let result = `${year}${dateSeparator}${gtNine(month)}${dateSeparator}${gtNine(date)} ${gtNine(hour)}${timeSeparator}${gtNine(
     min
   )}${timeSeparator}${gtNine(second)}`;
 
-  const dateRegExp = new RegExp(dateSeparator, 'gmi');
-  const timeRegExp = new RegExp(timeSeparator, 'gmi');
+    const dateRegExp = new RegExp(dateSeparator, 'gmi');
+    const timeRegExp = new RegExp(timeSeparator, 'gmi');
 
-  let [dateRes, timeRes] = result.split(' ');
+    let [dateRes, timeRes] = result.split(' ');
 
-  switch (type) {
-    case 1:
-      return isShowSeparator ? dateRes : dateRes.replace(dateRegExp, '');
-    case 2:
-      return isShowSeparator ? timeRes : timeRes.replace(timeRegExp, '');
-    default:
-      return isShowSeparator ? result : `${dateRes.replace(dateRegExp, '')}${timeRes.replace(timeRegExp, '')}`;
-  }
-}
-function versionReplace(str) {
-  var date = Math.floor(Date.now() / 1000);
-  // var result = str.match(/<(?:\blink\b|\bscript\b).*?(?:\bsrc\b|\bhref\b)=("|')(.*)\1.*?\/?>/gim);
-  // var result = str.match(/(<(?:\blink\b|\bscript\b).*?(?:\bsrc\b|\bhref\b)=.*?)(?:(\.(?:css|js|map)\??))(.*?\/?>)/gim);
-  // console.log(result);
-  var date = Math.floor(Date.now() / 1000);
-  var r = str.replace(/(<(?:\blink\b|\bscript\b).*?(?:\bsrc\b|\bhref\b)=.*?)(?:(\.(?:css|js)\??))(.*?\/?>)/gim, function ($f, $1, $2, $3) {
-    if ($2.includes('?')) {
-      if ($3.includes()) {
-      }
-    } else {
-      return `${$1}${$2}?v=${dateFormat(date, { isShowSeparator: false })}${$3}`;
+    switch (type) {
+        case 1:
+            return isShowSeparator ? dateRes : dateRes.replace(dateRegExp, '');
+        case 2:
+            return isShowSeparator ? timeRes : timeRes.replace(timeRegExp, '');
+        default:
+            return isShowSeparator ? result : `${dateRes.replace(dateRegExp, '')}${timeRes.replace(timeRegExp, '')}`;
     }
-    // return `${$1}${$2.includes('?') ? `${$2}v=${dateFormat(date, { isShowSeparator: false })}&` : `${$2}?v=${dateFormat(date, { isShowSeparator: false })}`}${$3}`;
-  });
-  console.log(r);
 }
 
-exports.randomVersion = function () {
-  return through2.obj(function (file, enc, cb) {
-    if (file.isNull()) {
-      return cb(null, file);
-    }
-    if (file.isBuffer()) {
-      let result = file.contents.toString();
-      result = versionReplace(result);
-      file.contents = Buffer.from(result);
-    }
-    cb(null, file);
-  });
+// 修改 html 中引入文件的版本号
+exports.htmlImportFileVersion = function() {
+    let date = Math.floor(Date.now() / 1000);
+    // 正则表达式拆分成下面 (<(?:\blink\b|\bscript\b|img).*?(?:\bsrc\b|\bhref\b)=.*?\.(?:css|js|png|jpg|jpeg|bmp|gif|webp))(\?[^<>"']*)?(.*?\/?>)
+    let tagsReg = "\\blink\\b|\\bscript\\b|img";
+    let attrsReg = "\\bsrc\\b|\\bhref\\b";
+    let extsReg = "css|js|png|jpg|jpeg|bmp|gif|webp";
+    let reg = new RegExp("(<(?:" + tagsReg + ").*?(?:" + attrsReg + ")=.*?\\.(?:" + extsReg + "))(\\?[^<>\\\"\\']*)?(.*?\\/?>)", 'gmi');
+
+    return through2.obj(function(file, enc, cb) {
+        if (file.isNull()) {
+            return cb(null, file);
+        }
+
+        if (file.isBuffer()) {
+            let result = file.contents.toString();
+            result = result.replace(reg, function($f, $1, $2, $3) {
+                console.log($f, $1, $2, $3)
+                // 没有匹配到 ? 参数
+                if (!$2) {
+                    return `${$1}?v=${dateFormat(date, { isShowSeparator: false })}${$3}`;
+                }
+                // ? 参数中包含 v 参数
+                var result = $2.match(/((v=)([^&]*))/gmi);
+                if (Array.isArray(result)) {
+                    $2 = $2.replace(/((v=)([^&]*))/gmi, `$2${dateFormat(date, { isShowSeparator: false })}`); // 替换 v 参数
+                    return `${$1}${$2}${$3}`;
+                }
+                // 有 ? 但没有 v 参数, 可能有其他参数
+                var arr = $2.split('?');
+                return `${$1}${arr[0]}?v=${dateFormat(date, { isShowSeparator: false })}${arr[1] != '' ? `&${arr[1]}`: ''}${$3}`;
+            });
+
+            file.contents = Buffer.from(result);
+        }
+
+        cb(null, file);
+    });
 };
+
+// css 中引入图片的版本号
+// exports.cssFileImportImgVersion = function() {
+//     return through2.obj(function(file, enc, cb) {
+//         if (file.isNull()) {
+//             return cb(null, file);
+//         }
+
+//         if (file.isBuffer()) {
+//             let result = file.contest.toString();
+
+
+
+//             file.contents = Buffer.from(result);
+//         }
+
+//         cb(null, file);
+//     })
+// }

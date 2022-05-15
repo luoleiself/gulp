@@ -18,7 +18,7 @@ const rename = require('gulp-rename');
 const del = require('del'); // delete files and folders
 const plumber = require('gulp-plumber');
 
-const { randomVersion } = require('./randomVersion');
+const { htmlImportFileVersion } = require('./randomVersion'); // 修改 html中 引入文件的版本号
 const buildConf = require('../build.config');
 
 let { serverConf, resolvePath } = require('./gulp.config');
@@ -79,8 +79,10 @@ function html(cb) {
   let dataBuf = [];
   let options = require('./htmlincluder.config'); // gulp-htmlincluder
   options = Object.assign({}, options, buildConf.htmlIncluderConf);
-  let htmlStream = src(config.html.src).pipe(plumber()).pipe(includer(options)).pipe(dest(config.html.dest));
-  htmlStream = NODE_ENV === 'development' ? htmlStream.pipe(browserSync.stream()) : htmlStream.pipe(randomVersion());
+  let htmlStream = src(config.html.src).pipe(plumber()).pipe(includer(options))
+  htmlStream = NODE_ENV === 'development' ? htmlStream : htmlStream.pipe(htmlImportFileVersion());
+  htmlStream.pipe(dest(config.html.dest));
+  htmlStream = NODE_ENV === 'development' ? htmlStream.pipe(browserSync.stream()) : htmlStream;
   cb();
 }
 
