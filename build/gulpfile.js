@@ -18,7 +18,7 @@ const rename = require('gulp-rename');
 const del = require('del'); // delete files and folders
 const plumber = require('gulp-plumber');
 
-const { htmlImportFileVersion, testStream } = require('./randomVersion'); // 修改 html中 引入文件的版本号
+const { htmlImportFileVersion } = require('./randomVersion'); // 修改 html中 引入文件的版本号
 const buildConf = require('../build.config');
 
 let { serverConf, resolvePath } = require('./gulp.config');
