@@ -1,4 +1,4 @@
-const through2 = require('through2');
+const { Transform } = require('stream');
 
 /**
  * @member dateFormat 日期时间格式化
@@ -58,50 +58,42 @@ exports.htmlImportFileVersion = function () {
   let extsReg = 'css|js|png|jpg|jpeg|bmp|gif|webp';
   let reg = new RegExp('(<(?:' + tagsReg + ').*?(?:' + attrsReg + ')=.*?\\.(?:' + extsReg + '))(\\?[^<>\\"\\\']*)?(.*?\\/?>)', 'gmi');
 
-  return through2.obj(function (file, enc, cb) {
-    if (file.isNull()) {
-      return cb(null, file);
-    }
+  return new Transform({
+    objectMode: true,
+    transform: function (chunk, enc, cb) {
+      if (chunk.isNull()) {
+        return cb(null, chunk);
+      }
 
-    if (file.isBuffer()) {
-      let result = file.contents.toString();
-      result = result.replace(reg, function ($f, $1, $2, $3) {
-        console.log($f, $1, $2, $3);
-        // 没有匹配到 ? 参数
-        if (!$2) {
-          return `${$1}?v=${dateFormat(date, { isShowSeparator: false })}${$3}`;
-        }
-        // ? 参数中包含 v 参数
-        var result = $2.match(/((v=)([^&]*))/gim);
-        if (Array.isArray(result)) {
-          $2 = $2.replace(/((v=)([^&]*))/gim, `$2${dateFormat(date, { isShowSeparator: false })}`); // 替换 v 参数
-          return `${$1}${$2}${$3}`;
-        }
-        // 有 ? 但没有 v 参数, 可能有其他参数
-        var arr = $2.split('?');
-        return `${$1}${arr[0]}?v=${dateFormat(date, { isShowSeparator: false })}${arr[1] != '' ? `&${arr[1]}` : ''}${$3}`;
-      });
+      if (chunk.isBuffer()) {
+        let result = chunk.contents.toString();
+        console.log(dateFormat(date));
+        result = result.replace(reg, function ($f, $1, $2, $3) {
+          console.log($f, $1, $2, $3);
+          // 没有匹配到 ? 参数
+          if (!$2) {
+            return `${$1}?v=${dateFormat(date, { isShowSeparator: false })}${$3}`;
+          }
+          // ? 参数中包含 v 参数
+          var result = $2.match(/((v=)([^&]*))/gim);
+          if (Array.isArray(result)) {
+            $2 = $2.replace(/((v=)([^&]*))/gim, `$2${dateFormat(date, { isShowSeparator: false })}`); // 替换 v 参数
+            return `${$1}${$2}${$3}`;
+          }
+          // 有 ? 但没有 v 参数, 可能有其他参数
+          var arr = $2.split('?');
+          return `${$1}${arr[0]}?v=${dateFormat(date, { isShowSeparator: false })}${arr[1] != '' ? `&${arr[1]}` : ''}${$3}`;
+        });
 
-      file.contents = Buffer.from(result);
-    }
+        chunk.contents = Buffer.from(result);
+      }
+      if (chunk.isStream()) {
+        return cb();
+      }
 
-    cb(null, file);
+      cb(null, chunk);
+    },
   });
 };
 
 // css 中引入图片的版本号
-// exports.cssFileImportImgVersion = function() {
-//     return through2.obj(function(file, enc, cb) {
-//         if (file.isNull()) {
-//             return cb(null, file);
-//         }
-
-//         if (file.isBuffer()) {
-//             let result = file.contest.toString();
-
-//             file.contents = Buffer.from(result);
-//         }
-
-//         cb(null, file);
-//     })
-// }
