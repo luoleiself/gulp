@@ -17,19 +17,25 @@ const concat = require('gulp-concat');
 const rename = require('gulp-rename');
 const del = require('del'); // delete files and folders
 const plumber = require('gulp-plumber');
-let { serverConf, resolvePath } = require('./build/gulp.config');
-const buildConf = require('./build.config');
+
+const { htmlImportFileVersion } = require('./randomVersion'); // 修改 html中 引入文件的版本号
+const buildConf = require('../build.config');
+
+let { serverConf, resolvePath } = require('./gulp.config');
 
 const config = resolvePath(buildConf.gulpConf);
 serverConf = Object.assign({}, serverConf, buildConf.serverConf);
 
 const NODE_ENV = process.env.NODE_ENV || 'production';
 
+try {
+  process.chdir(path.resolve(process.cwd(), '../'));
+} catch (err) {
+  console.error(`process.chdir: ${err}`);
+}
+
 // 处理 css
-async function css(cb) {
-  if (NODE_ENV === 'production') {
-    await del([config.css.dest]);
-  }
+function css(cb) {
   let cssStream = src(config.css.src)
     .pipe(plumber())
     .pipe(sourceMaps.init({ loadMaps: false }))
@@ -40,25 +46,19 @@ async function css(cb) {
   cssStream = config.css.isConcat ? cssStream.pipe(concat('index.min.css')) : cssStream;
   cssStream = cssStream.pipe(sourceMaps.write('./')).pipe(dest(config.css.dest));
   cssStream = NODE_ENV === 'development' ? cssStream.pipe(browserSync.stream()) : cssStream;
-  return cssStream;
+  cb();
 }
 
 // 处理图片
-async function image(cb) {
-  if (NODE_ENV === 'production') {
-    await del([config.image.dest]);
-  }
+function image(cb) {
   let imgStream = src(config.image.src).pipe(plumber()).pipe(dest(config.image.dest));
   imgStream = NODE_ENV === 'development' ? imgStream.pipe(browserSync.stream()) : imgStream;
-  return imgStream;
+  cb();
 }
 
 // 处理js
-async function js(cb) {
-  if (NODE_ENV === 'production') {
-    await del([config.js.dest]);
-  }
-  let webpackConf = require('./build/webpack.config');
+function js(cb) {
+  let webpackConf = require('./webpack.config');
   webpackConf = Object.assign({}, { mode: NODE_ENV }, webpackConf, buildConf.webpackConf);
   let jsStream = src(config.js.src)
     .pipe(plumber())
@@ -71,30 +71,32 @@ async function js(cb) {
   jsStream = config.js.isConcat ? jsStream.pipe(concat('bundle.min.js')) : jsStream; // 是否合并文件
   jsStream = jsStream.pipe(sourceMaps.write('./')).pipe(dest(config.js.dest));
   jsStream = NODE_ENV === 'development' ? jsStream.pipe(browserSync.stream()) : jsStream;
-  return jsStream;
+  cb();
 }
 
 // 处理 html
-async function html(cb) {
-  if (NODE_ENV === 'production') {
-    await del([config.html.dest]);
-  }
-  let options = require('./build/htmlincluder.config'); // gulp-htmlincluder
+function html(cb) {
+  let dataBuf = [];
+  let options = require('./htmlincluder.config'); // gulp-htmlincluder
   options = Object.assign({}, options, buildConf.htmlIncluderConf);
-  let htmlStream = src(config.html.src).pipe(plumber()).pipe(includer(options));
-  htmlStream = htmlStream.pipe(dest(config.html.dest));
+  let htmlStream = src(config.html.src).pipe(plumber()).pipe(includer(options))
+  htmlStream = NODE_ENV === 'development' ? htmlStream : htmlStream.pipe(htmlImportFileVersion());
+  htmlStream.pipe(dest(config.html.dest));
   htmlStream = NODE_ENV === 'development' ? htmlStream.pipe(browserSync.stream()) : htmlStream;
-  return htmlStream;
+  cb();
 }
 
 // 处理依赖库资源
-async function libs(cb) {
-  if (NODE_ENV === 'production') {
-    await del([config.libs.dest]);
-  }
+function libs(cb) {
   let libsStream = src(config.libs.src).pipe(plumber()).pipe(dest(config.libs.dest));
   libsStream = NODE_ENV === 'development' ? libsStream.pipe(browserSync.stream()) : libsStream;
-  return libsStream;
+  cb();
+}
+
+// 清除文件和目录
+async function clean(cb) {
+  await del([config.css.dest, config.image.dest, config.js.dest, config.html.dest, config.libs.dest]);
+  cb();
 }
 
 // 启动服务, 监听文件变化
@@ -119,7 +121,8 @@ function server(cb) {
   watch(config.js.src, parallel(js));
   watch(config.image.src, parallel(image));
   watch(config.libs.src, parallel(libs));
+  cb();
 }
 
 exports.dev = parallel(server, css, js, image, libs, html);
-exports.build = parallel(css, js, image, libs, html);
+exports.build = series(clean, parallel(css, js, image, libs, html));
