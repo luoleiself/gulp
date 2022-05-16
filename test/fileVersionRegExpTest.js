@@ -121,36 +121,36 @@ function dateFormat(paramDate, { type = 0, isShowSeparator = true, dateSeparator
 }
 console.log(`dateFormat(1652441404000) `, dateFormat(1652441404000));
 console.log(
-  `dateFormat(1652441404000, {type : 0, dateSeparator : '/', timeSeparator : '_', isShowSeparator :false}) `,
-  dateFormat(1652441404000, { type: 0, dateSeparator: '/', timeSeparator: '_', isShowSeparator: false })
+  `dateFormat(new Date(), {type : 0, dateSeparator : '/', timeSeparator : '_', isShowSeparator :false}) `,
+  dateFormat(new Date(), { type: 0, dateSeparator: '/', timeSeparator: '_', isShowSeparator: false })
 );
 console.log(
   `dateFormat(1652441404000, {type : 1, dateSeparator : '/', timeSeparator : '_', isShowSeparator :false}) `,
   dateFormat(1652441404000, { type: 1, dateSeparator: '/', timeSeparator: '_', isShowSeparator: false })
 );
 console.log(
-  `dateFormat(1652441404000, {type : 2, dateSeparator : '/', timeSeparator : '_', isShowSeparator :false}) `,
-  dateFormat(1652441404000, { type: 2, dateSeparator: '/', timeSeparator: '_', isShowSeparator: false })
+  `dateFormat(new Date(), {type : 2, dateSeparator : '/', timeSeparator : '_', isShowSeparator :false}) `,
+  dateFormat(new Date(), { type: 2, dateSeparator: '/', timeSeparator: '_', isShowSeparator: false })
 );
 console.log(
-  `dateFormat(1652441404000, {type : 3, dateSeparator : '/', timeSeparator : '_', isShowSeparator :false}) `,
-  dateFormat(1652441404000, { type: 3, dateSeparator: '/', timeSeparator: '_', isShowSeparator: false })
+  `dateFormat(new Date(), {type : 3, dateSeparator : '/', timeSeparator : '_', isShowSeparator :false}) `,
+  dateFormat(new Date(), { type: 3, dateSeparator: '/', timeSeparator: '_', isShowSeparator: false })
 );
 console.log(
-  `dateFormat(1652441404000, {type : 0, dateSeparator : '/', timeSeparator : '_', isShowSeparator :true}) `,
-  dateFormat(1652441404000, { type: 0, dateSeparator: '/', timeSeparator: '_', isShowSeparator: true })
+  `dateFormat(Date.now(), {type : 0, dateSeparator : '/', timeSeparator : '_', isShowSeparator :true}) `,
+  dateFormat(Date.now(), { type: 0, dateSeparator: '/', timeSeparator: '_', isShowSeparator: true })
 );
 console.log(
-  `dateFormat(1652441404000, {type : 1, dateSeparator : '/', timeSeparator : '_', isShowSeparator :true}) `,
-  dateFormat(1652441404000, { type: 1, dateSeparator: '/', timeSeparator: '_', isShowSeparator: true })
+  `dateFormat(new Date(), {type : 1, dateSeparator : '/', timeSeparator : '_', isShowSeparator :true}) `,
+  dateFormat(new Date(), { type: 1, dateSeparator: '/', timeSeparator: '_', isShowSeparator: true })
 );
 console.log(
   `dateFormat(1652441404000, {type : 2, dateSeparator : '/', timeSeparator : '_', isShowSeparator :true}) `,
   dateFormat(1652441404000, { type: 2, dateSeparator: '/', timeSeparator: '_', isShowSeparator: true })
 );
 console.log(
-  `dateFormat(1652441404000, {type : 3, dateSeparator : '/', timeSeparator : '_', isShowSeparator :true}) `,
-  dateFormat(1652441404000, { type: 3, dateSeparator: '/', timeSeparator: '_', isShowSeparator: true })
+  `dateFormat(Date.now(), {type : 3, dateSeparator : '/', timeSeparator : '_', isShowSeparator :true}) `,
+  dateFormat(Date.now(), { type: 3, dateSeparator: '/', timeSeparator: '_', isShowSeparator: true })
 );
 
 // var result = str.match(/<(?:\blink\b|\bscript\b).*?(?:\bsrc\b|\bhref\b)=("|')(.*)\1.*?\/?>/gim);
