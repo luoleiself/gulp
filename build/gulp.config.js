@@ -14,7 +14,7 @@ exports.serverConf = {
   port: 8080,
   host: 'localhost',
   openBrowser: true,
-  baseDir: './',
+  baseDir: '.',
   index: 'index.html',
 };
 
@@ -31,11 +31,14 @@ exports.resolvePath = function (config) {
       ? path.dirname(config.htmlSrc)
       : config.htmlSrc
     : 'src';
-  let baseDest = isValidHtmlDest
-    ? path.dirname(config.htmlDest) !== '.'
-      ? path.dirname(config.htmlDest)
-      : config.htmlDest
-    : 'dist';
+
+  let baseDest = isValidHtmlDest ? config.htmlDest : 'dist';
+
+  // let baseDest = isValidHtmlDest
+  //   ? path.dirname(config.htmlDest) !== '.'
+  //     ? path.dirname(config.htmlDest)
+  //     : config.htmlDest
+  //   : 'dist';
 
   conf.css = {
     src: [`${joinPath(baseSrc, 'css', '**/*')}`, `!${joinPath(baseSrc, 'css', '**/*{.map,.min}*')}`],

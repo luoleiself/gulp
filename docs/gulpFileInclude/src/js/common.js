@@ -1,5 +1,3 @@
-import 'core-js/stable';
-import 'regenerator-runtime/runtime';
 import path from 'path';
 
 // import Vue from 'vue';

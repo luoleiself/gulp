@@ -69,7 +69,7 @@ exports.htmlImportFileVersion = function () {
         let result = chunk.contents.toString();
         console.log(dateFormat(date));
         result = result.replace(reg, function ($f, $1, $2, $3) {
-          console.log($f, $1, $2, $3);
+          // console.log($f, $1, $2, $3);
           // 没有匹配到 ? 参数
           if (!$2) {
             return `${$1}?v=${dateFormat(date, { isShowSeparator: false })}${$3}`;
@@ -95,5 +95,3 @@ exports.htmlImportFileVersion = function () {
     },
   });
 };
-
-// css 中引入图片的版本号
