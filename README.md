@@ -12,10 +12,10 @@
 
 - 如需要覆盖 gulp 资源路径, webpack, server, gulp-htmlincluder 配置, 可在 build.config.js 中指定对象中配置, gulp 任务启动时会自动读取此配置项覆盖默认配置
 
-- ES6 以上 API 兼容 IE 9 用法: 需要手动在模块内导入以下包 [babel 7.4.0 版本 @babel/polyfill 包被废弃](https://babeljs.io/docs/en/babel-polyfill) | [Babel 新的提案](https://babeljs.io/docs/en/plugins-list#es2021)
+- ~~ES6 以上 API 兼容 IE 9 用法: 需要手动在模块内导入以下包 [babel 7.4.0 版本 @babel/polyfill 包被废弃](https://babeljs.io/docs/en/babel-polyfill) | [Babel 新的提案](https://babeljs.io/docs/en/plugins-list#es2021)~~
 
-  - import "core-js/stable";
-  - import "regenerator-runtime/runtime";
+  - ~~import "core-js/stable";~~
+  - ~~import "regenerator-runtime/runtime";~~
 
 - 依赖库
 
@@ -25,11 +25,7 @@
 
   - 使用 npm 安装依赖库, 如果想使用 import 导入依赖库但不想被打包进 dist/js/chunk-vendor.min.js 中, 可在 build/webpack.config.js 中 externals 配置忽略项
 
-// core-js
-// @babel/runtime
-// @babel/runtime-corejs3
-// @babel/plugin-transform-runtime
-// @babel/plugin-external-helpers
+core-js @babel/runtime @babel/runtime-corejs3 @babel/plugin-transform-runtime @babel/plugin-external-helpers
 
 ### 开发流程
 
