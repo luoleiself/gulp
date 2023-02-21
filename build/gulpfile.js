@@ -17,16 +17,15 @@ const concat = require('gulp-concat');
 const rename = require('gulp-rename');
 const del = require('del'); // delete files and folders
 const plumber = require('gulp-plumber');
+const utils = require('./utils');
 
 const { htmlImportFileVersion } = require('./randomVersion'); // 修改 html中 引入文件的版本号
 const buildConf = require('../build.config');
 
-let { serverConf, resolvePath } = require('./gulp.config');
-
-const config = resolvePath(buildConf.gulpConf);
-serverConf = Object.assign({}, serverConf, buildConf.serverConf);
-
 const NODE_ENV = process.env.NODE_ENV || 'production';
+
+let config = utils.resolvePath(buildConf.gulpConf);
+let serverConf = Object.assign({}, { port: 8080, host: 'localhost', openBrowser: true, baseDir: '.', index: 'index.html', }, buildConf.serverConf);
 
 try {
   process.chdir(path.resolve(process.cwd(), '../'));

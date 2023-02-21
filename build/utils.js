@@ -5,18 +5,10 @@ function joinPath(...args) {
   if (!flag) throw new TypeError('rest param is must be string...');
   return path.join(...args).replace(/\\/gi, '/');
 }
+
 function isString(arg) {
   return typeof arg === 'string';
 }
-
-// 服务器配置
-exports.serverConf = {
-  port: 8080,
-  host: 'localhost',
-  openBrowser: true,
-  baseDir: '.',
-  index: 'index.html',
-};
 
 // 打包资源文规则
 exports.resolvePath = function (config) {
@@ -63,4 +55,4 @@ exports.resolvePath = function (config) {
     dest: `${joinPath(isValidHtmlDest ? config.htmlDest : `${baseDest}/`)}`,
   };
   return conf;
-};
+}
