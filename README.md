@@ -25,6 +25,12 @@
 
   - 使用 npm 安装依赖库, 如果想使用 import 导入依赖库但不想被打包进 dist/js/chunk-vendor.min.js 中, 可在 build/webpack.config.js 中 externals 配置忽略项
 
+// core-js
+// @babel/runtime
+// @babel/runtime-corejs3
+// @babel/plugin-transform-runtime
+// @babel/plugin-external-helpers
+
 ### 开发流程
 
 1. 执行 npm install 安装项目运行依赖
@@ -36,7 +42,8 @@
    - htmlIncluderConf 为重置 gulp-htmlincluder 插件配置
 
    ```html
-   // 非合并文件编译压缩后, 如果增加额外资源需要手动在 -link.html 和 -footer.html中手动引入
+   // 非合并文件编译压缩后, 如果增加额外资源需要手动在 -link.html 和
+   -footer.html中手动引入
    <link href="dist/css/*.min.css" />
    <script src="dist/js/*.min.js"></script>
    ```
@@ -95,8 +102,8 @@
 ```javascript
 // gulp 资源路径配置
 exports.gulpConf = {
-  // cssConcat: false, // 是否合并 css 为一个文件
-  // jsConcat: false, // 是否合并 js 为一个文件
+  // cssConcat: false, // 是否合并 css 为一个文件, 默认 false
+  // jsConcat: false, // 是否合并 js 为一个文件, 默认 false
   /**
    * 静态资源根据此路径解析出静态资源的相对路径
    * 源码路径
@@ -118,7 +125,7 @@ exports.serverConf = {
   // port: 8080,
   // host: 'localhost',
   // openBrowser: true,
-  // baseDir: './',
+  // baseDir: '.',
   index: 'index.html',
 };
 // webpack 配置
@@ -138,7 +145,6 @@ exports.htmlIncluderConf = {};
 - dist 生产环境目录
 - docs 文档目录
 - build gulp 任务运行配置文件目录
-  - gulp.config.js 配置 gulp 任务工作流程文件
   - webpack.config.js webpack 配置文件
   - htmlincluder.config.js 页面模板配置文件
 - .babelrc babel 配置文件
