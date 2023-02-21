@@ -6,7 +6,7 @@
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
     "start": "npm run dev",
-    "dev": "cross-env NODE_ENV=development npx gulp --cwd ./build --color dev ",
+    "dev": "cross-env NODE_ENV=development npx gulp --cwd ./build --color dev",
     "build": "cross-env NODE_ENV=production npx gulp --cwd ./build --color build"
   },
   "repository": {
@@ -15,13 +15,14 @@
   },
   "dependencies": {
     "@babel/runtime": "^7.14.6",
+    "@babel/runtime-corejs3": "^7.21.0",
     "core-js": "^3.15.2"
   },
   "devDependencies": {
     "@babel/core": "^7.14.6",
+    "@babel/plugin-external-helpers": "^7.18.6",
     "@babel/plugin-transform-runtime": "^7.14.5",
     "@babel/preset-env": "^7.14.7",
-    "@babel/preset-react": "^7.14.5",
     "autoprefixer": "^10.3.1",
     "babel-loader": "^8.2.2",
     "browser-sync": "^2.27.4",

@@ -1,5 +1,3 @@
-import 'core-js/stable';
-import 'regenerator-runtime/runtime';
 import path from 'path';
 
 // import Vue from 'vue';
@@ -61,7 +59,7 @@ console.log(obj);
 
 class Animal {
   length = 0;
-  constructor() {}
+  constructor() { }
   say() {
     console.log('Hi, dog');
   }
@@ -78,6 +76,9 @@ class Dog extends Animal {
   }
 }
 const d = new Dog();
+
+console.log(d);
+
 d.run();
 Dog.run();
 
